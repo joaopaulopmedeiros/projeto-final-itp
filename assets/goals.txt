@@ -1,0 +1,6 @@
+//
+se pode vender;
+se pode pescar;
+se pode mover;
+
+//
