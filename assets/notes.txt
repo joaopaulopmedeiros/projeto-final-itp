@@ -1,0 +1,135 @@
+Onde o jogo inicia?
+- Porto é onde você começa 
+
+- Casos de Multa
+Pesque mais que a capacidade máxima de peixes que suporta, será multado;
+Pesque mais do que o permitido em um ponto de pesca, também será multado GAME OVER
+o barco que pescar a ponto de não ter mais peixe em um ponto será multado em R$ 50.000 e terá sua licença revogada. Em outras palavras, o jogo termina para o bot em questão (os demais continuam).
+
+
+x > 0 && y <= 10
+
+xy
+
+
+
+*** analisar multa de R$ 500,00 e lucro por peso;
+
+Tainha: R$ 100/kg
+Cioba: R$ 150/kg
+Robalo: R$ 200/kg
+
+input
+
+area dimensões da matriz, id
+
+0: indica que não há nada, apenas mar.
+1: indica um porto. Pode haver mais de um porto.
+entre 10 e 39: indicam um ponto de pesca, tal que as dezenas representam o tipo de peixe e as unidades a quantidade de peixes em quilo (haverá no máximo 9kg de peixe em um ponto de pesca). A dezena de 10 (valores de 10 a 19) indica a presença de Tainha, 20 (valores de 20 a 29) de Cioba e 30 (valores de 30 a 39) Robalo. Assim, o valor 32 informa que há 2kg de Robalo em uma determinada posição.
+
+
+- tem algo perto de mim?
+- pegar input de ação (done)
+
+
+
+passo a passo
+
+1) setar posição, me localizei no mapa (id, x, y);
+
+2) decidir qual ação tomar
+---> mover (value, x, y)
+---> vender (value) se é um porto (value == 1) && se estoque tem menos de 10 peixes (stock < 10) var local de readline
+obs: R$500,00 de multa por quilo!!!!
+---> pescar (value) se existe mais que 1 peixe na área (value é maior ou igual 12, 22, 32) estoque é menor que 10 
+obs: R$50.000 and GAMEOVER
+
+1. Cair numa posição (txibum)
+2. Checar se onde eu caí, é um porto.
+   2.1. Checar se eu posso vender
+   2.2.  
+
+
+3) tomar a ação
+mover
+--->
+
+4) dizer sua ação
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Ignorar zero
+2. Peixes mais caros (Robalo, Cioba e Tainha) onde há maior v
+3. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ver se onde estou é bom para pesca. Se sim, eu iria continuar lá e ganhar dinheiro, até n poder mais pegar.
+ver se posso vender, se sim eu vou procurar e vou chegar até o lugar mais próximo onde eu possa vender.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
