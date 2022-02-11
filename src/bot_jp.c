@@ -77,7 +77,7 @@ bool isFullStock(Stock stock) {
 }
 
 //limpar estoque
-void cleanStock(Stock* stock) {
+void setZeroItemsOnStock(Stock* stock) {
   stock->total = 0;
 }
 
@@ -157,7 +157,7 @@ void read(Player* player, Map* map) {
 void react(Player* player, char* command, char* result) {
   if(strcmp(result, "DONE") == 0) {
     if(strcmp(command, "SELL") == 0) {
-      cleanStock(&player->stock);
+      setZeroItemsOnStock(&player->stock);
     }
     if(strcmp(command, "FISH") == 0) {
       addItemToStock(&player->stock);
@@ -170,7 +170,7 @@ int main() {
   Map map;
   Player player;
 
-  cleanStock(&player.stock);
+  setZeroItemsOnStock(&player.stock);
 
   setbuf(stdin, NULL);
   setbuf(stdout, NULL); 
