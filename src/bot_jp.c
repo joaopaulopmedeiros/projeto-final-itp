@@ -19,8 +19,16 @@ typedef struct {
   int totalBotsPlaying; //quantidade de bots jogando
 } Map;
 
+//estoque de peixes do bot
+typedef struct {
+  int totalTainhas;
+  int totalCiobas; 
+  int totalRobalos;
+} Stock;
+
 typedef struct {
   char id[MAX_LINE]; //id do meu jogador ou bot
+  Stock stock; //estoque de peixes
 } Player;
 
 // informa se ponto é apenas mar aberto
@@ -41,11 +49,12 @@ bool isHarborArea(int value) {
   }
 }
 
-char* chooseCommand(Map* map) {
+//escolhe comando do bot (movimentação, pesca ou venda) conforme situação do mapa
+char* chooseCommand(Player* player, Map* map) {
   return "LEFT";
 }
 
-// lê os dados do jogo e atualiza os dados do bot
+// lê os dados do jogo e atualiza o mapa conforme posições dos bots adversários
 void readData(Map* map) {
   map->points = malloc(map->height * sizeof(Point*));
 
@@ -89,9 +98,10 @@ int main() {
 
   while (1) {
     readData(&map);
-    char* command = chooseCommand(&map);
+    char* command = chooseCommand(&player, &map);
     printf("%s\n", command);
     scanf("%s", line);
   }
+
   return 0;
 }
