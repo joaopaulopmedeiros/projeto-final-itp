@@ -16,12 +16,12 @@ typedef struct {
   Point** points; //pontos de que o mapa é composto 
 } Map;
 
-void readData(int h, int w, char* myId, Map* map) {
+void readData(char* myId, Map* map) {
   char id[MAX_LINE];
   int v, n, x, y;
-  
-  for (int i = 0; i < h; i++) {   
-    for (int j = 0; j < w; j++) {
+
+  for (int i = 0; i < map->height; i++) {   
+    for (int j = 0; j < map->width; j++) {
       scanf("%i", &v);
     }
   }
@@ -52,7 +52,7 @@ int main() {
   // === PARTIDA === 
   while (1) {
     // LÊ OS DADOS DO JOGO E ATUALIZA OS DADOS DO BOT
-    readData(map.height, map.width, myId, &map);
+    readData(myId, &map);
     // INSERIR UMA LÓGICA PARA ESCOLHER UMA AÇÃO A SER EXECUTADA
     char* command = chooseCommand(&map);
     // envia a ação escolhida
