@@ -1,23 +1,25 @@
-/********************************************************************
-  Bot-exemplo
-  
-  Bot_A: anda pra esquerda
-  
-  Após receber as informações iniciais do jogo, a cada rodada esse
-  bot irá se movimentar para esquerda.
-  Cabe a você agora aprimorar sua estratégia!!!
- ********************************************************************/
-
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define MAX_LINE 50
 
-/* ADAPTAR EM FUNÇÃO DE COMO OS DADOS SERÃO ARMAZENADOS NO SEU BOT */
-void readData(int h, int w) {
+//ponto do mapa
+typedef struct {
+  int value; //valor
+} Point;
+
+//mapa do jogo
+typedef struct {
+  int height; //altura do mapa
+  int width; //largura do mapa
+  Point** points; //pontos de que o mapa é composto 
+} Map;
+
+void readData(int h, int w, char* myId, Map* map) {
   char id[MAX_LINE];
   int v, n, x, y;
-
+  
   for (int i = 0; i < h; i++) {   
     for (int j = 0; j < w; j++) {
       scanf("%i", &v);
@@ -29,36 +31,34 @@ void readData(int h, int w) {
   }
 }
 
-int main() {
-  char line[MAX_LINE];   // dados temporários
-  char myId[MAX_LINE];   // identificador do bot em questão
+char* chooseCommand(Map* map)
+{
+  return "LEFT";
+}
 
-  setbuf(stdin, NULL);   // stdin, stdout e stderr não terão buffers
-  setbuf(stdout, NULL);  // assim, nada é "guardado temporariamente"
+int main() {
+  char line[MAX_LINE];
+  char myId[MAX_LINE];
+
+  setbuf(stdin, NULL);
+  setbuf(stdout, NULL); 
   setbuf(stderr, NULL);
 
-  // === INÍCIO DA PARTIDA ===
-  int h, w;
-  scanf("AREA %i %i", &h, &w);  // dimensão da área de pesca: altura (h) x largura (w)
-  // readData(h, w);               // lê os dados do jogo
-  scanf(" ID %s", myId);     // por fim, sabe qual seu próprio id
-  fprintf(stderr, "%s\n", myId);
+  Map map;
 
+  scanf("AREA %i %i", &map.height, &map.width);
+  scanf(" ID %s", myId);    
+  fprintf(stderr, "%s\n", myId);
   // === PARTIDA === 
-  // fica num laço infinito, pois quem vai terminar seu programa é o SIMULADOR.
   while (1) {
     // LÊ OS DADOS DO JOGO E ATUALIZA OS DADOS DO BOT
-    readData(h, w);
-
+    readData(map.height, map.width, myId, &map);
     // INSERIR UMA LÓGICA PARA ESCOLHER UMA AÇÃO A SER EXECUTADA
-
-    // envia a ação escolhida (nesse exemplo, ir para esquerda)
-    printf("LEFT\n");
-
+    char* command = chooseCommand(&map);
+    // envia a ação escolhida
+    printf("%s\n", command);
     // lê qual foi o resultado da ação (e eventualmente atualiza os dados do bot).
     scanf("%s", line);
-    // fgets(line, MAX_LINE, stdin);
   }
-
   return 0;
 }
