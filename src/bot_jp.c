@@ -67,6 +67,15 @@ bool isEmptyStock(Stock stock) {
   }
 }
 
+//informa se estoque está cheio
+bool isFullStock(Stock stock) {
+  if(stock.total == 10) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 //vender um peixe - zera o estoque e determina comando "SELL"
 char* sell(Stock* stock) {
   stock->total = 0;
@@ -78,7 +87,6 @@ char* fish(Stock* stock) {
   stock->total += 1;
   return "FISH";
 }
-
 
 //escolhe comando do bot (movimentação, pesca ou venda) conforme situação do mapa
 char* chooseCommand(Player* player, Map* map) {
@@ -93,7 +101,7 @@ char* chooseCommand(Player* player, Map* map) {
 
   if(isHarborArea(value) && !isEmptyStock(player->stock)) {
     command = sell(&player->stock);
-  } else if(!isForbbidenFishingArea(value)) {
+  } else if(!isForbbidenFishingArea(value) && !isFullStock(player->stock)) {
     command = fish(&player->stock);
   } else {
     //command = move();
