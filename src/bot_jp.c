@@ -60,6 +60,15 @@ bool isForbbidenFishingArea(int value) {
   }
 }
 
+//informa se estoque está vazio
+bool isEmptyStock(Stock stock) {
+  if(stock.totalCiobas + stock.totalRobalos + stock.totalTainhas <= 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 //escolhe comando do bot (movimentação, pesca ou venda) conforme situação do mapa
 char* chooseCommand(Player* player, Map* map) {
   int distance = 1; //distância entre ponto e meu usuário - neste caso, varre uma casa
@@ -71,16 +80,12 @@ char* chooseCommand(Player* player, Map* map) {
 
   command = "LEFT";
 
-  if(isEmptySeaArea(value)) {
-    //command = move();
-  } else if(isHarborArea(value)) {
+  if(isHarborArea(value) && !isEmptyStock(player->stock)) {
     //command = sell();
+  } else if(!isForbbidenFishingArea(value)) {
+    //command = fish();
   } else {
-    if(!isForbbidenFishingArea(value)) {
-      //command = fish();
-    } else {
-      //command = move();
-    }
+    //command = move();
   }
 
   return command;
