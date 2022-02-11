@@ -81,7 +81,7 @@ void cleanStock(Stock* stock) {
   stock->total = 0;
 }
 
-// aumenta uma unidade no estoque e determina comando "FISH"
+// aumenta uma unidade no estoque
 void addItemToStock(Stock* stock) {
   stock->total += 1;
 }
