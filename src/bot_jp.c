@@ -23,9 +23,8 @@ typedef struct {
   char id[MAX_LINE]; //id do meu jogador ou bot
 } Player;
 
-// atualiza os dados de todos os pontos do mapa
-void updateMap(Map* map)
-{
+// lê os dados do jogo e atualiza os dados do bot
+void readData(Map* map) {
   map->points = malloc(map->height * sizeof(Point*));
 
   for (int i = 0; i < map->height; i++){
@@ -37,25 +36,17 @@ void updateMap(Map* map)
       scanf("%i", &map->points[i][j].value);
     }
   }
-}
 
-void updateBotsPositions(Map* map)
-{
-    char id[MAX_LINE];
-    int v, x, y;
+  char id[MAX_LINE];
+  
+  int v, x, y;
 
-    scanf(" BOTS %i", &map->totalBotsPlaying); 
+  scanf(" BOTS %i", &map->totalBotsPlaying); 
 
-    for (int i = 0; i < map->totalBotsPlaying; i++) {
+  for (int i = 0; i < map->totalBotsPlaying; i++) {
     // lê o id dos bots e suas posições
     scanf("%s %i %i", id, &x, &y); 
   }
-}
-
-// lê os dados do jogo e atualiza os dados do bot
-void readData(Map* map) {
-  updateMap(map);
-  updateBotsPositions(map);
 }
 
 char* chooseCommand(Map* map)
