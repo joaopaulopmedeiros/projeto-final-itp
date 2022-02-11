@@ -21,9 +21,7 @@ typedef struct {
 
 //estoque de peixes do bot
 typedef struct {
-  int totalTainhas;
-  int totalCiobas; 
-  int totalRobalos;
+  int total;
 } Stock;
 
 typedef struct {
@@ -62,12 +60,25 @@ bool isForbbidenFishingArea(int value) {
 
 //informa se estoque está vazio
 bool isEmptyStock(Stock stock) {
-  if(stock.totalCiobas + stock.totalRobalos + stock.totalTainhas <= 0) {
+  if(stock.total <= 0) {
     return true;
   } else {
     return false;
   }
 }
+
+//vender um peixe - zera o estoque e determina comando "SELL"
+char* sell(Stock* stock) {
+  stock->total = 0;
+  return "SELL";
+}
+
+//pescar um peixe - aumenta uma unidade no estoque e determina comando "FISH"
+char* fish(Stock* stock) {
+  stock->total += 1;
+  return "FISH";
+}
+
 
 //escolhe comando do bot (movimentação, pesca ou venda) conforme situação do mapa
 char* chooseCommand(Player* player, Map* map) {
@@ -81,9 +92,9 @@ char* chooseCommand(Player* player, Map* map) {
   command = "LEFT";
 
   if(isHarborArea(value) && !isEmptyStock(player->stock)) {
-    //command = sell();
+    command = sell(&player->stock);
   } else if(!isForbbidenFishingArea(value)) {
-    //command = fish();
+    command = fish(&player->stock);
   } else {
     //command = move();
   }
