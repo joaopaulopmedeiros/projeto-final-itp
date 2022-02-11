@@ -16,10 +16,10 @@ typedef struct {
   int height; //altura do mapa
   int width; //largura do mapa
   Point** points; //pontos de que o mapa é composto 
+  int totalBotsPlaying; //quantidade de bots jogando
 } Map;
 
 typedef struct {
-  int totalBotsPlaying; //quantidade de bots jogando
   char id[MAX_LINE]; //id do meu jogador ou bot
 } Player;
 
@@ -39,20 +39,23 @@ void updateMap(Map* map)
   }
 }
 
-// lê os dados do jogo e atualiza os dados do bot
-void readData(Player* player, Map* map) {
-  char id[MAX_LINE];
-  int v, x, y;
+void updateBotsPositions(Map* map)
+{
+    char id[MAX_LINE];
+    int v, x, y;
 
-  updateMap(map);
+    scanf(" BOTS %i", &map->totalBotsPlaying); 
 
-  //lê a quantidade de bots
-  scanf(" BOTS %i", &player->totalBotsPlaying); 
-
-  for (int i = 0; i < player->totalBotsPlaying; i++) {
+    for (int i = 0; i < map->totalBotsPlaying; i++) {
     // lê o id dos bots e suas posições
     scanf("%s %i %i", id, &x, &y); 
   }
+}
+
+// lê os dados do jogo e atualiza os dados do bot
+void readData(Map* map) {
+  updateMap(map);
+  updateBotsPositions(map);
 }
 
 char* chooseCommand(Map* map)
@@ -74,7 +77,7 @@ int main() {
   fprintf(stderr, "%s\n", player.id);
 
   while (1) {
-    readData(&player, &map);
+    readData(&map);
     char* command = chooseCommand(&map);
     printf("%s\n", command);
     scanf("%s", line);
