@@ -76,16 +76,14 @@ bool isFullStock(Stock stock) {
   }
 }
 
-//vender um peixe - zera o estoque e determina comando "SELL"
-char* sell(Stock* stock) {
+//limpar estoque
+void cleanStock(Stock* stock) {
   stock->total = 0;
-  return "SELL";
 }
 
-//pescar um peixe - aumenta uma unidade no estoque e determina comando "FISH"
-char* fish(Stock* stock) {
+// aumenta uma unidade no estoque e determina comando "FISH"
+void addItemToStock(Stock* stock) {
   stock->total += 1;
-  return "FISH";
 }
 
 //escolhe comando do bot (movimentação, pesca ou venda) conforme situação do mapa
@@ -100,9 +98,9 @@ char* chooseCommand(Player* player, Map* map) {
   command = "LEFT";
 
   if(isHarborArea(value) && !isEmptyStock(player->stock)) {
-    command = sell(&player->stock);
+    command = "SELL";
   } else if(!isForbbidenFishingArea(value) && !isFullStock(player->stock)) {
-    command = fish(&player->stock);
+    command = "FISH";
   } else {
     //command = move();
   }
@@ -146,8 +144,20 @@ void readData(Player* player, Map* map) {
   }
 }
 
+//reage ao resultado de comandos do bot
+void react(Player* player, char* command, char* result) {
+  if(strcmp(result, "DONE") == 0) {
+    if(strcmp(command, "SELL") == 0) {
+      cleanStock(&player->stock);
+    }
+    if(strcmp(command, "FISH") == 0) {
+      addItemToStock(&player->stock);
+    }
+  }
+}
+
 int main() {
-  char line[MAX_LINE];
+  char result[MAX_LINE];
   Map map;
   Player player;
 
@@ -163,7 +173,8 @@ int main() {
     readData(&player, &map);
     char* command = chooseCommand(&player, &map);
     printf("%s\n", command);
-    scanf("%s", line);
+    scanf("%s", result);
+    react(&player, command, result);
   }
 
   return 0;
