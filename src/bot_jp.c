@@ -95,8 +95,6 @@ char* chooseCommand(Player* player, Map* map) {
 
   char* command = malloc(sizeof(char) * 10);
 
-  command = "LEFT";
-
   if(isHarborArea(value) && !isEmptyStock(player->stock)) {
     command = "SELL";
   } else if(!isForbbidenFishingArea(value) && !isFullStock(player->stock)) {
@@ -109,7 +107,7 @@ char* chooseCommand(Player* player, Map* map) {
 }
 
 // lê os dados do jogo e atualiza o mapa conforme posições dos bots adversários
-void readData(Player* player, Map* map) {
+void read(Player* player, Map* map) {
   map->points = malloc(map->height * sizeof(Point*));
 
   for (int i = 0; i < map->height; i++){
@@ -170,7 +168,7 @@ int main() {
   fprintf(stderr, "%s\n", player.id);
 
   while (1) {
-    readData(&player, &map);
+    read(&player, &map);
     char* command = chooseCommand(&player, &map);
     printf("%s\n", command);
     scanf("%s", result);
