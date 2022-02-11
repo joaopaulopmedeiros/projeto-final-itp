@@ -7,6 +7,7 @@
 
 //ponto do mapa
 typedef struct {
+  bool anyPlayerOnSurface; //há algum bot na superfície.
   int value; //valor encontrado no ponto. Informa se há peixe ou não, se é local de pesca etc.
 } Point;
 
@@ -23,8 +24,7 @@ typedef struct {
 } Player;
 
 // informa se ponto é apenas mar aberto
-bool isEmptySeaArea(int value)
-{
+bool isEmptySeaArea(int value) {
   if(value == 0) {
     return true;
   } else {
@@ -33,13 +33,16 @@ bool isEmptySeaArea(int value)
 }
 
 // informa se ponto é um porto
-bool isHarbor(int value)
-{
+bool isHarborArea(int value) {
   if(value == 1) {
     return true;
   } else {
     return false;
   }
+}
+
+char* chooseCommand(Map* map) {
+  return "LEFT";
 }
 
 // lê os dados do jogo e atualiza os dados do bot
@@ -52,6 +55,7 @@ void readData(Map* map) {
 
   for (int i = 0; i < map->height; i++) {   
     for (int j = 0; j < map->width; j++) {
+      //seta valor presente em ponto
       scanf("%i", &map->points[i][j].value);
     }
   }
@@ -60,17 +64,14 @@ void readData(Map* map) {
   
   int v, x, y;
 
+  //seta quantidade total de bots
   scanf(" BOTS %i", &map->totalBotsPlaying); 
 
   for (int i = 0; i < map->totalBotsPlaying; i++) {
-    // lê o id dos bots e suas posições
     scanf("%s %i %i", id, &x, &y); 
+    //seta que há ao menos um bot na superfície do ponto
+    map->points[x][y].anyPlayerOnSurface = true;
   }
-}
-
-char* chooseCommand(Map* map)
-{
-  return "LEFT";
 }
 
 int main() {
