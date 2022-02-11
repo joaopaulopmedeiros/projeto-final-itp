@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define MAX_LINE 50
 
 //ponto do mapa
 typedef struct {
-  int x; //coordenada x (latitude)
-  int y; //coordenada y (longitude)
   int value; //valor encontrado no ponto. Informa se há peixe ou não, se é local de pesca etc.
 } Point;
 
@@ -23,12 +22,32 @@ typedef struct {
   char id[MAX_LINE]; //id do meu jogador ou bot
 } Player;
 
+// informa se ponto é apenas mar aberto
+bool isEmptySeaArea(int value)
+{
+  if(value == 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// informa se ponto é um porto
+bool isHarbor(int value)
+{
+  if(value == 1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 // lê os dados do jogo e atualiza os dados do bot
 void readData(Map* map) {
   map->points = malloc(map->height * sizeof(Point*));
 
   for (int i = 0; i < map->height; i++){
-    map->points[i]=malloc(map->width * sizeof(Point));
+    map->points[i] = malloc(map->width * sizeof(Point));
   }
 
   for (int i = 0; i < map->height; i++) {   
