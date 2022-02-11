@@ -51,7 +51,7 @@ bool isHarborArea(int value) {
 
 //informa se é região proibida para pesca (há zero quilos de qualquer um dos três tipos de peixe)
 bool isForbbidenFishingArea(int value) {
-  if(value == 10 || value == 20 || value == 30) {
+  if(value = 1 || value == 10 || value == 11 || value == 20 || value == 21 || value == 30 || value == 31) {
     return true;
   } else {
     return false;
@@ -81,15 +81,26 @@ void cleanStock(Stock* stock) {
   stock->total = 0;
 }
 
-// aumenta uma unidade no estoque
+//aumenta uma unidade no estoque
 void addItemToStock(Stock* stock) {
   stock->total += 1;
 }
 
+int getValueFromVerticalCoord(Map* map, Player* player, int distance) {
+  return map->points[player->x][player->y+distance].value;
+}
+
+int getValueFromHorizontalCoord(Map* map, Player* player, int distance) {
+  return map->points[player->x+distance][player->y].value;
+}
+
+//movimenta bot em função da posição atual (coord x e y)
+char* move(Player* player, Map* map) {
+  return "LEFT";
+}
+
 //escolhe comando do bot (movimentação, pesca ou venda) conforme situação do mapa
 char* chooseCommand(Player* player, Map* map) {
-  int distance = 1; //distância entre ponto e meu usuário - neste caso, varre uma casa
-
   //valor encontrado na posição atual do bot
   int value = map->points[player->x][player->y].value;
 
@@ -100,13 +111,13 @@ char* chooseCommand(Player* player, Map* map) {
   } else if(!isForbbidenFishingArea(value) && !isFullStock(player->stock)) {
     command = "FISH";
   } else {
-    //command = move();
+    command = "LEFT";
   }
 
   return command;
 }
 
-// lê os dados do jogo e atualiza o mapa conforme posições dos bots adversários
+//lê os dados do jogo e atualiza o mapa conforme posições dos bots adversários
 void read(Player* player, Map* map) {
   map->points = malloc(map->height * sizeof(Point*));
 
@@ -158,6 +169,8 @@ int main() {
   char result[MAX_LINE];
   Map map;
   Player player;
+
+  cleanStock(&player.stock);
 
   setbuf(stdin, NULL);
   setbuf(stdout, NULL); 
