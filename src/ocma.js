@@ -708,7 +708,7 @@ function Y() {
     }
     console.log(e);
 }
-var x = 10,
+var x = 500,
     z = 1e4,
     xt,
     Ht = [
