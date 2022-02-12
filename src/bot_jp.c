@@ -116,25 +116,21 @@ char* move(Player* player, Map* map) {
   //se a posição acima do bot não fugir do limite do mapa, pegue o valor encontrado
   if(player->row-1 > 0) {
     values[up] = map->points[player->row-1][player->column].value;
-    fprintf(stderr, "-> up com valor: %d\n", values[up]);
   }
 
   //se a posição abaixo do bot não fugir do limite do mapa, pegue o valor encontrado
   if(player->row+1 < map->height-1) {
     values[down] = map->points[player->row+1][player->column].value;
-    fprintf(stderr, "-> down com valor: %d\n", values[down]);
   }
 
   //se a posição ao lado direito do bot não fugir do limite do mapa, pegue o valor encontrado
   if(player->column+1 < map->width-1) {
     values[right] = map->points[player->row][player->column+1].value;
-    fprintf(stderr, "-> right com valor: %d\n", values[right]);
   }  
 
   //se a posição ao lado esquerdo do bot não fugir do limite do mapa, pegue o valor encontrado
   if(player->column-1 > 0) {
     values[left] = map->points[player->row][player->column-1].value;
-    fprintf(stderr, "-> left com valor: %d\n", values[left]);
   }
 
   for (int i = 0; i < 4; i++) {
@@ -153,7 +149,7 @@ char* move(Player* player, Map* map) {
   else if(targetPoint == right) {
     return "RIGHT";
   }
-  else if(targetPoint == left) {
+  else {
     return "LEFT";
   }
 }
@@ -166,8 +162,10 @@ char* chooseCommand(Player* player, Map* map) {
   char* command = malloc(sizeof(char) * 10);
 
   if(isHarborArea(value) && !isEmptyStock(player->stock)) {
+    setZeroItemsOnStock(&player->stock);
     command = "SELL";
   } else if(isFishingArea(value) && !isFullStock(player->stock)) {
+    addItemToStock(&player->stock);
     command = "FISH";
   } else {
     command = move(player, map);
@@ -213,7 +211,7 @@ void read(Player* player, Map* map) {
 }
 
 //reage ao resultado de comandos do bot
-void react(Player* player, char* command, char* result) {
+/*void react(Player* player, char* command, char* result) {
   if(strcmp(result, "DONE") == 0) {
     if(strcmp(command, "SELL") == 0) {
       setZeroItemsOnStock(&player->stock);
@@ -222,7 +220,7 @@ void react(Player* player, char* command, char* result) {
       addItemToStock(&player->stock);
     }
   }
-}
+}*/
 
 int main() {
   char result[MAX_LINE];
@@ -244,7 +242,7 @@ int main() {
     char* command = chooseCommand(&player, &map);
     printf("%s\n", command);
     scanf("%s", result);
-    react(&player, command, result);
+    //react(&player, command, result);
   }
 
   return 0;
