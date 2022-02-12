@@ -49,7 +49,7 @@ bool isHarborArea(int value) {
   }
 }
 
-//informa se região é propícia para pesca (há zero quilos de qualquer um dos três tipos de peixe)
+//informa se região é propícia para pesca (há mais de 1 peixe)
 bool isFishingArea(int value) {
   if((value >= 12 && value <= 19) || (value >= 22 && value <= 29) || (value >= 32 && value <= 39)) {
     return true;
