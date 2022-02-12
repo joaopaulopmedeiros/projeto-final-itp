@@ -101,36 +101,49 @@ enum Position {
   left,
 };
 
-char* move(Player* player, Map* map) {
-  //checar se existe ponto
-  //obter valor encontrado nele
-  //comparar com os demais
-  //ir para onde houver o maior
-  
+//checar para cada ponto próximo (cima, baixo, direita e esquerda) 
+//se há possibilidade de se mover (o que não pode ocorrer caso esteja no limite do mapa)
+//e também se há algum outro bot no ponto
+//caso esteja tudo okay, comparar qual tem maior valor de peixe e ir pescar lá
+char* move(Player* player, Map* map) {  
   int values[4] = {0};
 
   int targetPoint = -1;
 
   int highestValue = 0;
 
+  Point p;
+
   //se a posição acima do bot não fugir do limite do mapa, pegue o valor encontrado
   if(player->row-1 > 0) {
-    values[up] = map->points[player->row-1][player->column].value;
+    p = map->points[player->row-1][player->column];
+    if(!p.anyOtherPlayerOnSurface) {
+      values[up] = p.value;
+    }
   }
 
   //se a posição abaixo do bot não fugir do limite do mapa, pegue o valor encontrado
   if(player->row+1 < map->height-1) {
-    values[down] = map->points[player->row+1][player->column].value;
+    p = map->points[player->row+1][player->column];
+    if(!p.anyOtherPlayerOnSurface) {
+      values[down] = p.value;
+    }
   }
 
   //se a posição ao lado direito do bot não fugir do limite do mapa, pegue o valor encontrado
   if(player->column+1 < map->width-1) {
-    values[right] = map->points[player->row][player->column+1].value;
+    p = map->points[player->row][player->column+1];
+    if(!p.anyOtherPlayerOnSurface) {
+      values[right] = p.value;
+    }
   }  
 
   //se a posição ao lado esquerdo do bot não fugir do limite do mapa, pegue o valor encontrado
   if(player->column-1 > 0) {
-    values[left] = map->points[player->row][player->column-1].value;
+    p = map->points[player->row][player->column-1];
+    if(!p.anyOtherPlayerOnSurface) {
+      values[left] = p.value;
+    }
   }
 
   for (int i = 0; i < 4; i++) {
