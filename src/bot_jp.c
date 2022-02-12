@@ -94,9 +94,66 @@ int getValueFromHorizontalCoord(Map* map, Player* player, int distance) {
   return map->points[player->x+distance][player->y].value;
 }
 
+enum Position {
+  up,
+  right,
+  down,
+  left,
+};
+
 //movimenta bot em função da posição atual (coord x e y)
 char* move(Player* player, Map* map) {
-  return "LEFT";
+  int distance = 1; //distância entre ponto e meu usuário - neste caso, varre uma casa
+  int positions[4] = {0};
+
+  //se limitado à esquerda, direita, cima, ou baixo
+  if(player->y == 0 || player->y == map->width-1 || player->x == 0 || player->x == map->width-1) {
+    //veja se 
+    //posso ir para cima
+    if(player->x != 0) {
+      positions[up] = getValueFromVerticalCoord(map, player, distance);
+    }
+    //posso ir para baixo
+    if(player->x != map->width-1) {   
+      positions[down] = getValueFromVerticalCoord(map, player, -distance);
+    }
+
+    //posso me mover à esquerda
+    if(player->y != 0) {
+      positions[left] = getValueFromHorizontalCoord(map, player, -distance);
+    }
+    //posso me mover à direita
+    if(player->y != map->width-1) {
+      positions[right] = getValueFromHorizontalCoord(map, player, distance);
+    }
+  } 
+  //sem limites, igual à liga da justiça
+  else {
+    positions[up] = getValueFromVerticalCoord(map, player, distance);
+    positions[right] = getValueFromHorizontalCoord(map, player, distance);
+    positions[down] = getValueFromVerticalCoord(map, player, -distance);
+    positions[left] = getValueFromHorizontalCoord(map, player, -distance);
+  }
+
+  int highest = 0;
+
+  for(int i = 0; i < 4; i++) {
+    if(i > 0) {
+      if(positions[i]-positions[i-1] > 0) {
+        highest = i;
+      }
+    }
+  }
+
+  if(highest == up) {
+    return "UP";
+  } else if(highest == right) {
+    return "RIGHT";
+  } else if(highest == down) {
+    return "DOWN";
+  } else {
+    return "LEFT";
+  }
 }
 
 //escolhe comando do bot (movimentação, pesca ou venda) conforme situação do mapa
@@ -111,7 +168,7 @@ char* chooseCommand(Player* player, Map* map) {
   } else if(!isForbbidenFishingArea(value) && !isFullStock(player->stock)) {
     command = "FISH";
   } else {
-    command = "LEFT";
+    command = move(player, map);
   }
 
   return command;
@@ -155,6 +212,7 @@ void read(Player* player, Map* map) {
 
 //reage ao resultado de comandos do bot
 void react(Player* player, char* command, char* result) {
+  fprintf(stderr, "comando %s\n", command);
   if(strcmp(result, "DONE") == 0) {
     if(strcmp(command, "SELL") == 0) {
       setZeroItemsOnStock(&player->stock);

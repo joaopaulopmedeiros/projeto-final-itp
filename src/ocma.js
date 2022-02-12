@@ -327,7 +327,8 @@ function v(r) {
     return typeof r == "number" && ((j = new at.default(r.toString())), (ct = r)), ct;
 }
 function y() {
-    return j || v(lt(Math.random(), 1e5)), j.next();
+    let seed = 0.93704; //é dividido por 100.000
+    return j || v(lt(seed, 1e5)), j.next(); //colocar o mesmo mapa é só repetir a seed
 }
 function h(r, t = 0) {
     return lt(y(), r, t);
@@ -707,7 +708,7 @@ function Y() {
     }
     console.log(e);
 }
-var x = 500,
+var x = 10,
     z = 1e4,
     xt,
     Ht = [
