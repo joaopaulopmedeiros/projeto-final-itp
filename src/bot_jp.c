@@ -96,33 +96,61 @@ int getValueFromHorizontalCoord(Map* map, Player* player, int distance) {
 
 enum Position {
   up,
-  right,
   down,
+  right,
   left,
 };
 
 char* move(Player* player, Map* map) {
-  int positions[4] = {0};
+  //checar se existe ponto
+  //obter valor encontrado nele
+  //comparar com os demais
+  //ir para onde houver o maior
+  
+  int values[4] = {0};
 
-  //limitado em relação à altura do mapa
-  if(player->row == 0 || player->row == map->height-1) {
-    if(player->row == 0) {
-      //positions[right] = map->points[player->row][player->column+1].value;
-      return "RIGHT";
+  int targetPoint = -1;
+
+  int highestValue = 0;
+
+  //se a posição acima do bot não fugir do limite do mapa, pegue o valor encontrado
+  if(player->row+1 > 0) {
+    values[up] = map->points[player->row+1][player->column].value;
+  }
+
+  //se a posição abaixo do bot não fugir do limite do mapa, pegue o valor encontrado
+  if(player->row-1 < map->height-1) {
+    values[down] = map->points[player->row-1][player->column].value;
+  }
+
+  //se a posição ao lado direito do bot não fugir do limite do mapa, pegue o valor encontrado
+  if(player->column+1 < map->width-1) {
+    values[right] = map->points[player->row][player->column+1].value;
+  }  
+
+  //se a posição ao lado esquerdo do bot não fugir do limite do mapa, pegue o valor encontrado
+  if(player->column-1 > 0) {
+    values[left] = map->points[player->row][player->column-1].value;
+  }
+
+  for (int i = 0; i < 4; i++) {
+    if(values[i] >= highestValue) {
+      targetPoint = i;
+      highestValue = values[i];
     }
-    if(player->row == map->height-1) {
-      return "LEFT";
-    }
+  }
+
+  if(targetPoint == up) {
+    return "UP";
   } 
-  //limitado em relação à largura do mapa
-  else if(player->column == 0 || player->column == map->width-1) {
-    if(player->column == 0) {
-      return "LEFT";
-    }
-  } 
-  //sem limite imposto pela dimensão do mapa
-  else {
+  else if(targetPoint == down) {
     return "DOWN";
+  }  
+  else if(targetPoint == right) {
+    return "RIGHT";
+  }
+  else if(targetPoint == left) {
+    return "LEFT";
   }
 }
 
@@ -133,7 +161,7 @@ char* chooseCommand(Player* player, Map* map) {
 
   char* command = malloc(sizeof(char) * 10);
 
-if(isHarborArea(value) && !isEmptyStock(player->stock)) {
+  if(isHarborArea(value) && !isEmptyStock(player->stock)) {
     command = "SELL";
   } else if(isFishingArea(value) && !isFullStock(player->stock)) {
     command = "FISH";
