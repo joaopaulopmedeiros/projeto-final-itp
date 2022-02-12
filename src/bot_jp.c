@@ -51,7 +51,7 @@ bool isHarborArea(int value) {
 
 //informa se é região proibida para pesca (há zero quilos de qualquer um dos três tipos de peixe)
 bool isForbbidenFishingArea(int value) {
-  if(value = 1 || value == 10 || value == 11 || value == 20 || value == 21 || value == 30 || value == 31) {
+  if(value == 1 || value == 10 || value == 11 || value == 20 || value == 21 || value == 30 || value == 31) {
     return true;
   } else {
     return false;
@@ -69,7 +69,7 @@ bool isEmptyStock(Stock stock) {
 
 //informa se estoque está cheio
 bool isFullStock(Stock stock) {
-  if(stock.total == 10) {
+  if(stock.total >= 10) {
     return true;
   } else {
     return false;
@@ -161,6 +161,8 @@ char* chooseCommand(Player* player, Map* map) {
   //valor encontrado na posição atual do bot
   int value = map->points[player->x][player->y].value;
 
+  //fprintf(stderr, "x: %d y: %d, value: %d, é porto: %d, estoque vazio: %d, proibido pescar: %d, estoque cheio: %d \n", player->x, player->y, value, isHarborArea(value), isEmptyStock(player->stock), isForbbidenFishingArea(value), isFullStock(player->stock));
+
   char* command = malloc(sizeof(char) * 10);
 
   if(isHarborArea(value) && !isEmptyStock(player->stock)) {
@@ -212,7 +214,6 @@ void read(Player* player, Map* map) {
 
 //reage ao resultado de comandos do bot
 void react(Player* player, char* command, char* result) {
-  fprintf(stderr, "comando %s\n", command);
   if(strcmp(result, "DONE") == 0) {
     if(strcmp(command, "SELL") == 0) {
       setZeroItemsOnStock(&player->stock);
