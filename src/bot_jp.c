@@ -26,8 +26,8 @@ typedef struct {
 
 typedef struct {
   char id[MAX_LINE]; //id do meu jogador ou bot
-  int x; //coord x
-  int y; //coord y  
+  int x; // refere-se à altura
+  int y; // refere-se à largura  
   Stock stock; //estoque de peixes
 } Player;
 
@@ -49,9 +49,9 @@ bool isHarborArea(int value) {
   }
 }
 
-//informa se é região proibida para pesca (há zero quilos de qualquer um dos três tipos de peixe)
-bool isForbbidenFishingArea(int value) {
-  if(value == 1 || value == 10 || value == 11 || value == 20 || value == 21 || value == 30 || value == 31) {
+//informa se região é propícia para pesca (há zero quilos de qualquer um dos três tipos de peixe)
+bool isFishingArea(int value) {
+  if((value >= 12 && value <= 19) || (value >= 22 && value <= 29) || (value >= 32 && value <= 39)) {
     return true;
   } else {
     return false;
@@ -101,58 +101,28 @@ enum Position {
   left,
 };
 
-//movimenta bot em função da posição atual (coord x e y)
 char* move(Player* player, Map* map) {
-  int distance = 1; //distância entre ponto e meu usuário - neste caso, varre uma casa
   int positions[4] = {0};
 
-  //se limitado à esquerda, direita, cima, ou baixo
-  if(player->y == 0 || player->y == map->width-1 || player->x == 0 || player->x == map->width-1) {
-    //veja se 
-    //posso ir para cima
-    if(player->x != 0) {
-      positions[up] = getValueFromVerticalCoord(map, player, distance);
+  //limitado em relação à altura do mapa
+  if(player->x == 0 || player->x == map->height-1) {
+    if(player->x == 0) {
+      //positions[right] = map->points[player->x][player->y+1].value;
+      return "RIGHT";
     }
-    //posso ir para baixo
-    if(player->x != map->width-1) {   
-      positions[down] = getValueFromVerticalCoord(map, player, -distance);
-    }
-
-    //posso me mover à esquerda
-    if(player->y != 0) {
-      positions[left] = getValueFromHorizontalCoord(map, player, -distance);
-    }
-    //posso me mover à direita
-    if(player->y != map->width-1) {
-      positions[right] = getValueFromHorizontalCoord(map, player, distance);
+    if(player->x == map->height-1) {
+      return "LEFT";
     }
   } 
-  //sem limites, igual à liga da justiça
-  else {
-    positions[up] = getValueFromVerticalCoord(map, player, distance);
-    positions[right] = getValueFromHorizontalCoord(map, player, distance);
-    positions[down] = getValueFromVerticalCoord(map, player, -distance);
-    positions[left] = getValueFromHorizontalCoord(map, player, -distance);
-  }
-
-  int highest = 0;
-
-  for(int i = 0; i < 4; i++) {
-    if(i > 0) {
-      if(positions[i]-positions[i-1] > 0) {
-        highest = i;
-      }
+  //limitado em relação à largura do mapa
+  else if(player->y == 0 || player->y == map->width-1) {
+    if(player->y == 0) {
+      return "LEFT";
     }
-  }
-
-  if(highest == up) {
-    return "UP";
-  } else if(highest == right) {
-    return "RIGHT";
-  } else if(highest == down) {
+  } 
+  //sem limite imposto pela dimensão do mapa
+  else {
     return "DOWN";
-  } else {
-    return "LEFT";
   }
 }
 
@@ -161,13 +131,11 @@ char* chooseCommand(Player* player, Map* map) {
   //valor encontrado na posição atual do bot
   int value = map->points[player->x][player->y].value;
 
-  //fprintf(stderr, "x: %d y: %d, value: %d, é porto: %d, estoque vazio: %d, proibido pescar: %d, estoque cheio: %d \n", player->x, player->y, value, isHarborArea(value), isEmptyStock(player->stock), isForbbidenFishingArea(value), isFullStock(player->stock));
-
   char* command = malloc(sizeof(char) * 10);
 
-  if(isHarborArea(value) && !isEmptyStock(player->stock)) {
+if(isHarborArea(value) && !isEmptyStock(player->stock)) {
     command = "SELL";
-  } else if(!isForbbidenFishingArea(value) && !isFullStock(player->stock)) {
+  } else if(isFishingArea(value) && !isFullStock(player->stock)) {
     command = "FISH";
   } else {
     command = move(player, map);
