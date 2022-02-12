@@ -26,8 +26,8 @@ typedef struct {
 
 typedef struct {
   char id[MAX_LINE]; //id do meu jogador ou bot
-  int x; // refere-se à altura
-  int y; // refere-se à largura  
+  int row; // posição da linha, refere-se ao movimento lateral
+  int column; // posição da coluna, refere-se ao movimento vertical  
   Stock stock; //estoque de peixes
 } Player;
 
@@ -87,11 +87,11 @@ void addItemToStock(Stock* stock) {
 }
 
 int getValueFromVerticalCoord(Map* map, Player* player, int distance) {
-  return map->points[player->x][player->y+distance].value;
+  return map->points[player->row][player->column+distance].value;
 }
 
 int getValueFromHorizontalCoord(Map* map, Player* player, int distance) {
-  return map->points[player->x+distance][player->y].value;
+  return map->points[player->row+distance][player->column].value;
 }
 
 enum Position {
@@ -105,18 +105,18 @@ char* move(Player* player, Map* map) {
   int positions[4] = {0};
 
   //limitado em relação à altura do mapa
-  if(player->x == 0 || player->x == map->height-1) {
-    if(player->x == 0) {
-      //positions[right] = map->points[player->x][player->y+1].value;
+  if(player->row == 0 || player->row == map->height-1) {
+    if(player->row == 0) {
+      //positions[right] = map->points[player->row][player->column+1].value;
       return "RIGHT";
     }
-    if(player->x == map->height-1) {
+    if(player->row == map->height-1) {
       return "LEFT";
     }
   } 
   //limitado em relação à largura do mapa
-  else if(player->y == 0 || player->y == map->width-1) {
-    if(player->y == 0) {
+  else if(player->column == 0 || player->column == map->width-1) {
+    if(player->column == 0) {
       return "LEFT";
     }
   } 
@@ -129,7 +129,7 @@ char* move(Player* player, Map* map) {
 //escolhe comando do bot (movimentação, pesca ou venda) conforme situação do mapa
 char* chooseCommand(Player* player, Map* map) {
   //valor encontrado na posição atual do bot
-  int value = map->points[player->x][player->y].value;
+  int value = map->points[player->row][player->column].value;
 
   char* command = malloc(sizeof(char) * 10);
 
@@ -171,8 +171,8 @@ void read(Player* player, Map* map) {
 
     //se id for do meu bot, atualizar minha posição
     if(strcmp(player->id, id) == 0) {
-      player->x = x;
-      player->y = y;
+      player->row = x;
+      player->column = y;
     };
     
     //seta que há ao menos um bot na superfície do ponto
