@@ -708,7 +708,7 @@ function Y() {
     }
     console.log(e);
 }
-var x = 10,
+var x = 1, //RODADAS
     z = 1e4,
     xt,
     Ht = [
