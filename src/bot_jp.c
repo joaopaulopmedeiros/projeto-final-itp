@@ -211,7 +211,7 @@ char* goFishing(Player player, Map map, int distance) {
   else if(targetPoint == right) {
     return "RIGHT";
   }
-  else if(targetPoint == left) {
+  else {
     return "LEFT";
   }
 }
@@ -296,7 +296,7 @@ void react(Player* player, char* command, char* result) {
 
 int main() {
   char result[MAX_LINE];
-  char* command;
+  char* command = (char*) calloc(MAX_LINE, sizeof(char));;
   Map map;
   Player player;
 
