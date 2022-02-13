@@ -105,17 +105,17 @@ double calculateDistance(int x1, int x2, int y1, int y2) {
   return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
-//retorna coordenadas do porto mais próximo ao barco
-int* getTheNearestPort(Player myBoat, Map map) {
+//retorna coordenadas do porto mais próximo ao bot
+int* getTheNearestHarborArea(Player player, Map map) {
   int* portCoords = calloc(2, sizeof(int));
   double minDistance, distance;
 
-  minDistance = calculateDistance(myBoat.row, (map.height-1), myBoat.column, (map.width-1));
+  minDistance = calculateDistance(player.row, (map.height-1), player.column, (map.width-1));
 
   for (int i = 0; i < map.height; i++) {
     for (int j = 0; j < map.width; j++) {
       if (map.points[i][j].value == 1) {
-        distance = calculateDistance(myBoat.row, i, myBoat.column, j);
+        distance = calculateDistance(player.row, i, player.column, j);
         if (distance < minDistance) {
           minDistance = distance;
           portCoords[0] = i;
@@ -128,24 +128,47 @@ int* getTheNearestPort(Player myBoat, Map map) {
   return portCoords;
 }
 
-//Movimenta barco em direção ao porto
-char* goToPort(Player myBoat, int* port) {
+//retorna coordenadas da área de pesca mais próxima ao bot
+int* getTHeNearestFishingArea(Player player, Map map) {
+  int* portCoords = calloc(2, sizeof(int));
+  double minDistance, distance;
+
+  minDistance = calculateDistance(player.row, (map.height-1), player.column, (map.width-1));
+
+  for (int i = 0; i < map.height; i++) {
+    for (int j = 0; j < map.width; j++) {
+      if (isFishingArea(map.points[i][j].value)) {
+        distance = calculateDistance(player.row, i, player.column, j);
+        if (distance < minDistance) {
+          minDistance = distance;
+          portCoords[0] = i;
+          portCoords[1] = j;
+        }
+      }
+    }
+  }
+
+  return portCoords;
+}
+
+//movimenta bot em direção à coordenada
+char* goTo(Player player, int* coords) {
   char* command = (char*) calloc(MAX_LINE, sizeof(char));
 
-  if (myBoat.column > port[1]) {
+  if (player.column > coords[1]) {
     strcpy(command, "LEFT");
   }
-  else if (port[1] > myBoat.column) {
+  else if (coords[1] > player.column) {
     strcpy(command, "RIGHT");
   }
-  else if (myBoat.column == port[1]) {
-    if (myBoat.row > port[0]) {
+  else if (player.column == coords[1]) {
+    if (player.row > coords[0]) {
       strcpy(command, "UP");
     }
-    else if (port[0] > myBoat.row) {
+    else if (coords[0] > player.row) {
       strcpy(command, "DOWN");
     }
-    else if (port[0] == myBoat.row) {
+    else if (coords[0] == player.row) {
       strcpy(command, "SELL");
     }
   }
@@ -153,78 +176,13 @@ char* goToPort(Player myBoat, int* port) {
   return command; 
 }
 
-//realiza movimentação para busca de peixes
-char* goFishing(Player player, Map map, int distance) {
-  int values[4] = {0};
-
-  int targetPoint = -1;
-
-  int highestValue = 0;
-
-  Point p;
-
-  //se a posição acima do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player.row-distance >= 0) {
-    p = map.points[player.row-distance][player.column];
-    if(!p.anyOtherPlayerOnSurface) {
-      values[up] = p.value;
-    }
-  }
-
-  //se a posição abaixo do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player.row+distance <= map.height-distance) {
-    p = map.points[player.row+distance][player.column];
-    if(!p.anyOtherPlayerOnSurface) {
-      values[down] = p.value;
-    }
-  }
-
-  //se a posição ao lado direito do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player.column+distance <= map.width-distance) {
-    p = map.points[player.row][player.column+distance];
-    if(!p.anyOtherPlayerOnSurface) {
-      values[right] = p.value;
-    }
-  }  
-
-  //se a posição ao lado esquerdo do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player.column-distance >= 0) {
-    p = map.points[player.row][player.column-distance];
-    if(!p.anyOtherPlayerOnSurface) {
-      values[left] = p.value;
-    }
-  }
-
-  for (int i = 0; i < 4; i++) {
-    if(values[i] >= highestValue) {
-      targetPoint = i;
-      highestValue = values[i];
-    }
-  }
-
-  if(targetPoint == up) {
-    return "UP";
-  } 
-  else if(targetPoint == down) {
-    return "DOWN";
-  }  
-  else if(targetPoint == right) {
-    return "RIGHT";
-  }
-  else {
-    return "LEFT";
-  }
-}
-
-//checar para cada ponto próximo (cima, baixo, direita e esquerda) 
-//se há possibilidade de se mover (o que não pode ocorrer caso esteja no limite do mapa)
-//e também se há algum outro bot no ponto
-//caso esteja tudo okay, comparar qual tem maior valor de peixe e ir pescar lá
+//bot se move em direção ao porto, caso estoque esteja cheio.
+//caso contrário, irá se mover em direção à área de pesca mais próxima.
 char* move(Player player, Map map) {  
   if(isFullStock(player.stock)) {
-    return goToPort(player, getTheNearestPort(player, map));
+    return goTo(player, getTheNearestHarborArea(player, map));
   } else {
-    return goFishing(player, map, 1);
+    return goTo(player, getTHeNearestFishingArea(player, map));
   }
 }
 
