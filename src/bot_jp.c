@@ -153,6 +153,7 @@ char* goToPort(Player myBoat, int* port) {
   return command; 
 }
 
+//realiza movimentação para busca de peixes
 char* goFishing(Player player, Map map) {
   int values[4] = {0};
 
