@@ -280,7 +280,7 @@ Player createPlayer()
 
 int main() {
   char result[MAX_LINE];
-  char* command = (char*) calloc(MAX_LINE, sizeof(char));;
+  char* command = (char*) calloc(MAX_LINE, sizeof(char));
 
   setbuf(stdin, NULL);
   setbuf(stdout, NULL); 
