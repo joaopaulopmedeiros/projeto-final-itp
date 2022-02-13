@@ -294,21 +294,38 @@ void react(Player* player, char* command, char* result) {
   }
 }
 
+//criação de mapa do jogo
+Map createMap() {
+  Map map;
+
+  scanf("AREA %i %i", &map.height, &map.width);
+
+  return map;
+}
+
+//criação de bot
+Player createPlayer()
+{
+  Player player;
+  
+  scanf(" ID %s", player.id);    
+  
+  setZeroItemsOnStock(&player.stock);
+
+  return player;
+}
+
+
 int main() {
   char result[MAX_LINE];
   char* command = (char*) calloc(MAX_LINE, sizeof(char));;
-  Map map;
-  Player player;
-
-  setZeroItemsOnStock(&player.stock);
 
   setbuf(stdin, NULL);
   setbuf(stdout, NULL); 
   setbuf(stderr, NULL);
 
-  scanf("AREA %i %i", &map.height, &map.width);
-  scanf(" ID %s", player.id);    
-  fprintf(stderr, "%s\n", player.id);
+  Map map = createMap();
+  Player player = createPlayer();
 
   while (1) {
     read(&player, &map);
