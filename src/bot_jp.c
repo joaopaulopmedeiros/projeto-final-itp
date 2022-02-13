@@ -3,7 +3,7 @@ Autores: Diogo Lima e João Paulo M.
 Versão:  1.0.0
 Disciplina: ITP
 Objetivo: Desenvolver um bot escrito em C capaz de ler entradas de dados, mapeá-las
-e, em seguida, utilizá-las para traçar de estratégias para ganhar o jogo ambiental.
+e, em seguida, utilizá-las para traçar estratégias para ganhar o jogo ambiental.
 Isto é, identificar pontos de pesca e venda de peixes (portos) mais próximos, mover-se
 e ganhar dinheiro até o valor máximo de R$ 10.000,00.
 ***************************************************************************************/
