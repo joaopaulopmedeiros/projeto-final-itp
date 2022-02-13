@@ -9,4 +9,6 @@ e ganhar dinheiro até o valor máximo de R$ 10.000,00.
 ## Como rodar projeto
 Execução simples através de Makefile.
 
-`make build`
+```
+make build
+```
