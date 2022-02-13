@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <math.h>
 
 #define MAX_LINE 50
 
@@ -30,6 +31,13 @@ typedef struct {
   int column; // posição da coluna, refere-se ao movimento vertical  
   Stock stock; //estoque de peixes
 } Player;
+
+enum Position {
+  up,
+  down,
+  right,
+  left,
+};
 
 //informa se ponto é apenas mar aberto
 bool isEmptySeaArea(int value) {
@@ -86,26 +94,60 @@ void addItemToStock(Stock* stock) {
   stock->total += 1;
 }
 
-int getValueFromVerticalCoord(Map* map, Player* player, int distance) {
-  return map->points[player->row][player->column+distance].value;
+//Calcula distância entre dois pontos do mapa, dadas as suas coordenadas
+double calculateDistance(int x1, int x2, int y1, int y2) {
+  return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
-int getValueFromHorizontalCoord(Map* map, Player* player, int distance) {
-  return map->points[player->row+distance][player->column].value;
+//retorna coordenadas do porto mais próximo ao barco
+int* getTheNearestPort(Player myBoat, Map map) {
+  int* portCoords = calloc(2, sizeof(int));
+  double minDistance, distance;
+
+  minDistance = calculateDistance(myBoat.row, (map.height-1), myBoat.column, (map.width-1));
+
+  for (int i = 0; i < map.height; i++) {
+    for (int j = 0; j < map.width; j++) {
+      if (map.points[i][j].value == 1) {
+        distance = calculateDistance(myBoat.row, i, myBoat.column, j);
+        if (distance < minDistance) {
+          minDistance = distance;
+          portCoords[0] = i;
+          portCoords[1] = j;
+        }
+      }
+    }
+  }
+
+  return portCoords;
 }
 
-enum Position {
-  up,
-  down,
-  right,
-  left,
-};
+//Movimenta barco em direção ao porto
+char* goToPort(Player myBoat, int* port) {
+  char* command = (char*) calloc(MAX_LINE, sizeof(char));
 
-//checar para cada ponto próximo (cima, baixo, direita e esquerda) 
-//se há possibilidade de se mover (o que não pode ocorrer caso esteja no limite do mapa)
-//e também se há algum outro bot no ponto
-//caso esteja tudo okay, comparar qual tem maior valor de peixe e ir pescar lá
-char* move(Player* player, Map* map) {  
+  if (myBoat.column > port[1]) {
+    strcpy(command, "LEFT");
+  }
+  else if (port[1] > myBoat.column) {
+    strcpy(command, "RIGHT");
+  }
+  else if (myBoat.column == port[1]) {
+    if (myBoat.row > port[0]) {
+      strcpy(command, "UP");
+    }
+    else if (port[0] > myBoat.row) {
+      strcpy(command, "DOWN");
+    }
+    else if (port[0] == myBoat.row) {
+      strcpy(command, "SELL");
+    }
+  }
+
+  return command; 
+}
+
+char* goFishing(Player player, Map map) {
   int values[4] = {0};
 
   int targetPoint = -1;
@@ -115,32 +157,32 @@ char* move(Player* player, Map* map) {
   Point p;
 
   //se a posição acima do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player->row-1 >= 0) {
-    p = map->points[player->row-1][player->column];
+  if(player.row-1 >= 0) {
+    p = map.points[player.row-1][player.column];
     if(!p.anyOtherPlayerOnSurface) {
       values[up] = p.value;
     }
   }
 
   //se a posição abaixo do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player->row+1 <= map->height-1) {
-    p = map->points[player->row+1][player->column];
+  if(player.row+1 <= map.height-1) {
+    p = map.points[player.row+1][player.column];
     if(!p.anyOtherPlayerOnSurface) {
       values[down] = p.value;
     }
   }
 
   //se a posição ao lado direito do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player->column+1 <= map->width-1) {
-    p = map->points[player->row][player->column+1];
+  if(player.column+1 <= map.width-1) {
+    p = map.points[player.row][player.column+1];
     if(!p.anyOtherPlayerOnSurface) {
       values[right] = p.value;
     }
   }  
 
   //se a posição ao lado esquerdo do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player->column-1 >= 0) {
-    p = map->points[player->row][player->column-1];
+  if(player.column-1 >= 0) {
+    p = map.points[player.row][player.column-1];
     if(!p.anyOtherPlayerOnSurface) {
       values[left] = p.value;
     }
@@ -167,6 +209,18 @@ char* move(Player* player, Map* map) {
   }
 }
 
+//checar para cada ponto próximo (cima, baixo, direita e esquerda) 
+//se há possibilidade de se mover (o que não pode ocorrer caso esteja no limite do mapa)
+//e também se há algum outro bot no ponto
+//caso esteja tudo okay, comparar qual tem maior valor de peixe e ir pescar lá
+char* move(Player player, Map map) {  
+  if(isFullStock(player.stock)) {
+    return goToPort(player, getTheNearestPort(player, map));
+  } else {
+    return goFishing(player, map);
+  }
+}
+
 //escolhe comando do bot (movimentação, pesca ou venda) conforme situação do mapa
 char* chooseCommand(Player* player, Map* map) {
   //valor encontrado na posição atual do bot
@@ -181,7 +235,7 @@ char* chooseCommand(Player* player, Map* map) {
     addItemToStock(&player->stock);
     command = "FISH";
   } else {
-    command = move(player, map);
+    command = move(*player, *map);
   }
 
   return command;
@@ -223,18 +277,6 @@ void read(Player* player, Map* map) {
   }
 }
 
-//reage ao resultado de comandos do bot
-/*void react(Player* player, char* command, char* result) {
-  if(strcmp(result, "DONE") == 0) {
-    if(strcmp(command, "SELL") == 0) {
-      setZeroItemsOnStock(&player->stock);
-    }
-    if(strcmp(command, "FISH") == 0) {
-      addItemToStock(&player->stock);
-    }
-  }
-}*/
-
 int main() {
   char result[MAX_LINE];
   Map map;
@@ -255,7 +297,6 @@ int main() {
     char* command = chooseCommand(&player, &map);
     printf("%s\n", command);
     scanf("%s", result);
-    //react(&player, command, result);
   }
 
   return 0;
