@@ -154,7 +154,7 @@ char* goToPort(Player myBoat, int* port) {
 }
 
 //realiza movimentação para busca de peixes
-char* goFishing(Player player, Map map) {
+char* goFishing(Player player, Map map, int distance) {
   int values[4] = {0};
 
   int targetPoint = -1;
@@ -164,32 +164,32 @@ char* goFishing(Player player, Map map) {
   Point p;
 
   //se a posição acima do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player.row-1 >= 0) {
-    p = map.points[player.row-1][player.column];
+  if(player.row-distance >= 0) {
+    p = map.points[player.row-distance][player.column];
     if(!p.anyOtherPlayerOnSurface) {
       values[up] = p.value;
     }
   }
 
   //se a posição abaixo do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player.row+1 <= map.height-1) {
-    p = map.points[player.row+1][player.column];
+  if(player.row+distance <= map.height-distance) {
+    p = map.points[player.row+distance][player.column];
     if(!p.anyOtherPlayerOnSurface) {
       values[down] = p.value;
     }
   }
 
   //se a posição ao lado direito do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player.column+1 <= map.width-1) {
-    p = map.points[player.row][player.column+1];
+  if(player.column+distance <= map.width-distance) {
+    p = map.points[player.row][player.column+distance];
     if(!p.anyOtherPlayerOnSurface) {
       values[right] = p.value;
     }
   }  
 
   //se a posição ao lado esquerdo do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player.column-1 >= 0) {
-    p = map.points[player.row][player.column-1];
+  if(player.column-distance >= 0) {
+    p = map.points[player.row][player.column-distance];
     if(!p.anyOtherPlayerOnSurface) {
       values[left] = p.value;
     }
@@ -213,6 +213,8 @@ char* goFishing(Player player, Map map) {
   }
   else if(targetPoint == left) {
     return "LEFT";
+  } else {
+    goFishing(player, map, distance+1);
   }
 }
 
@@ -224,7 +226,7 @@ char* move(Player player, Map map) {
   if(isFullStock(player.stock)) {
     return goToPort(player, getTheNearestPort(player, map));
   } else {
-    return goFishing(player, map);
+    return goFishing(player, map, 1);
   }
 }
 
