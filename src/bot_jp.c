@@ -211,7 +211,7 @@ char* goFishing(Player player, Map map) {
   else if(targetPoint == right) {
     return "RIGHT";
   }
-  else {
+  else if(targetPoint == left) {
     return "LEFT";
   }
 }
@@ -235,7 +235,7 @@ char* chooseCommand(Player* player, Map* map) {
 
   char* command = malloc(sizeof(char) * 10);
 
-  if(isHarborArea(value) && !isEmptyStock(player->stock)) {
+  if(isHarborArea(value) && isFullStock(player->stock)) {
     setZeroItemsOnStock(&player->stock);
     command = "SELL";
   } else if(isFishingArea(value) && !isFullStock(player->stock)) {
