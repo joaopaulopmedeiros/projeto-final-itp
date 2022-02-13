@@ -1,21 +1,18 @@
 CC := gcc
 NODE := node
 
-build: message bot1 bot2 ocmaRUN	
+build: message bot1 ocmaRUN	
 
 message:
 	@echo "Hello, we're compiling OCMA program file bots"
 
-bot1: src/bot_jp.c
-	$(CC) $^ -o $@
-
-bot2: src/bot_jp_1.c
+bot1: src/bot_diogo_joaopaulo.c
 	$(CC) $^ -o $@
 
 ocmaRUN: src/ocma.js 
-	$(NODE) $^ bot1 bot2
+	$(NODE) $^ bot1
 
-clean: bot1 bot2
+clean: bot1
 	@rm $^
 
 reload: build
