@@ -229,18 +229,18 @@ char* move(Player player, Map map) {
 }
 
 //escolhe comando do bot (movimentação, pesca ou venda) conforme situação do mapa
-char* chooseCommand(Player* player, Map* map) {
+char* chooseCommand(Player player, Map map) {
   //valor encontrado na posição atual do bot
-  int value = map->points[player->row][player->column].value;
+  int value = map.points[player.row][player.column].value;
 
-  char* command = malloc(sizeof(char) * 10);
+  char* command = (char*) calloc(MAX_LINE, sizeof(char));
 
-  if(isHarborArea(value) && isFullStock(player->stock)) {
-    command = "SELL";
-  } else if(isFishingArea(value) && !isFullStock(player->stock)) {
-    command = "FISH";
+  if(isHarborArea(value) && isFullStock(player.stock)) {
+    strcpy(command, "SELL");
+  } else if(isFishingArea(value) && !isFullStock(player.stock)) {
+    strcpy(command, "FISH");
   } else {
-    command = move(*player, *map);
+    strcpy(command, move(player, map));
   }
 
   return command;
@@ -329,7 +329,7 @@ int main() {
 
   while (1) {
     read(&player, &map);
-    command = chooseCommand(&player, &map);
+    command = chooseCommand(player, map);
     printf("%s\n", command);
     scanf("%s", result);
     react(&player, command, result);
