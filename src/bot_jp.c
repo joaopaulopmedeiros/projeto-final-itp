@@ -213,8 +213,6 @@ char* goFishing(Player player, Map map, int distance) {
   }
   else if(targetPoint == left) {
     return "LEFT";
-  } else {
-    goFishing(player, map, distance+1);
   }
 }
 
