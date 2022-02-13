@@ -107,7 +107,7 @@ double calculateDistance(int x1, int x2, int y1, int y2) {
 
 //retorna coordenadas do porto mais próximo ao bot
 int* getTheNearestHarborArea(Player player, Map map) {
-  int* portCoords = calloc(2, sizeof(int));
+  int* coords = calloc(2, sizeof(int));
   double minDistance, distance;
 
   minDistance = calculateDistance(player.row, (map.height-1), player.column, (map.width-1));
@@ -118,19 +118,19 @@ int* getTheNearestHarborArea(Player player, Map map) {
         distance = calculateDistance(player.row, i, player.column, j);
         if (distance < minDistance) {
           minDistance = distance;
-          portCoords[0] = i;
-          portCoords[1] = j;
+          coords[0] = i;
+          coords[1] = j;
         }
       }
     }
   }
 
-  return portCoords;
+  return coords;
 }
 
 //retorna coordenadas da área de pesca mais próxima ao bot
 int* getTHeNearestFishingArea(Player player, Map map) {
-  int* portCoords = calloc(2, sizeof(int));
+  int* coords = calloc(2, sizeof(int));
   double minDistance, distance;
 
   minDistance = calculateDistance(player.row, (map.height-1), player.column, (map.width-1));
@@ -141,14 +141,14 @@ int* getTHeNearestFishingArea(Player player, Map map) {
         distance = calculateDistance(player.row, i, player.column, j);
         if (distance < minDistance) {
           minDistance = distance;
-          portCoords[0] = i;
-          portCoords[1] = j;
+          coords[0] = i;
+          coords[1] = j;
         }
       }
     }
   }
 
-  return portCoords;
+  return coords;
 }
 
 //movimenta bot em direção à coordenada
