@@ -115,7 +115,7 @@ char* move(Player* player, Map* map) {
   Point p;
 
   //se a posição acima do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player->row-1 > 0) {
+  if(player->row-1 >= 0) {
     p = map->points[player->row-1][player->column];
     if(!p.anyOtherPlayerOnSurface) {
       values[up] = p.value;
@@ -123,7 +123,7 @@ char* move(Player* player, Map* map) {
   }
 
   //se a posição abaixo do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player->row+1 < map->height-1) {
+  if(player->row+1 <= map->height-1) {
     p = map->points[player->row+1][player->column];
     if(!p.anyOtherPlayerOnSurface) {
       values[down] = p.value;
@@ -131,7 +131,7 @@ char* move(Player* player, Map* map) {
   }
 
   //se a posição ao lado direito do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player->column+1 < map->width-1) {
+  if(player->column+1 <= map->width-1) {
     p = map->points[player->row][player->column+1];
     if(!p.anyOtherPlayerOnSurface) {
       values[right] = p.value;
@@ -139,7 +139,7 @@ char* move(Player* player, Map* map) {
   }  
 
   //se a posição ao lado esquerdo do bot não fugir do limite do mapa, pegue o valor encontrado
-  if(player->column-1 > 0) {
+  if(player->column-1 >= 0) {
     p = map->points[player->row][player->column-1];
     if(!p.anyOtherPlayerOnSurface) {
       values[left] = p.value;
