@@ -1,3 +1,9 @@
+/********************************************************************
+Authors: Diogo Lima e João Paulo M.
+Version: v1.0.0
+Subject: ITP OCMA Challenge
+********************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
