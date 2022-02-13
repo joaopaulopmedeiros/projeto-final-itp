@@ -709,7 +709,7 @@ function Y() {
     }
     console.log(e);
 }
-var x = 500, //15
+var x = 500, //rodadas
     z = 1e4,
     xt,
     Ht = [
