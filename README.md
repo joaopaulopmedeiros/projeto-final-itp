@@ -15,3 +15,6 @@ make build
 
 ## Onde encontro o relatório
 [Acesse aqui](./assets/relatorio_projeto_final.pdf)
+
+## Resultado Final
+<img src="./assets/result.png">
